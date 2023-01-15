@@ -20,6 +20,7 @@ class CreateProductTable extends Migration
             $table->string('photo')->nullable();
             $table->text('observation');
             $table->enum('size', ['XS', 'S', 'M', 'L', 'XL']);
+            $table->softDeletes(); // this will create deleted_at field for softdelete
             $table->timestamps();
         });
     }
