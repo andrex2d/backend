@@ -31,7 +31,13 @@ class Category extends Model
      */
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'category_product', 'category_id', 'product_id' );
+        return $this->belongsToMany(Product::class, 'category_product',
+        'category_id', 'product_id' )->withPivot('promotion');
+    }
+
+    public function promotion(){
+        return $this->belongsToMany(Product::class)
+                ->wherePivot('promotion', true);
     }
 
 }

@@ -29,6 +29,8 @@ class ProductRequest extends FormRequest
             'price' => 'required',
             'observation' => 'required',
             'size' => 'required',
+            'category_id' => 'required',
+            'promotion' => 'required'
         ];
     }
 }

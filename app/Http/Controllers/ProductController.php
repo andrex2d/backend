@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
 use App\Http\Requests\SizeRequest;
+use App\Models\Category;
 
 class ProductController extends Controller
 {
@@ -41,10 +42,12 @@ class ProductController extends Controller
     {
         $request->validated();
         $product = Product::create($request->all());
+        $category = Category::find($request->input('category_id'));
+        $product->categories()->save($category,
+            ["promotion" => $request->input('promotion')]);
         return response()->json([
             'message' => 'Producto creado correctamente',
             ],201);
-
     }
 
     /**
@@ -71,9 +74,21 @@ class ProductController extends Controller
     {
         $request->validated();
         $product->update($request->all());
+        $this->updatePivot($product,[
+            "category_id" => $request->input('category_id'),
+            "promotion" => $request->input('promotion'),
+        ]);
         return response()->json([
             'message' => 'Producto modificado correctamente',
             ],200);
+    }
+
+    private function updatePivot(Product $product, $attributes){
+        $data =$product->categories()->first();
+        $data->pivot->category_id = $attributes['category_id'];
+        $data->pivot->promotion = $attributes['promotion'];
+        $data->pivot->save();
+        $product->refresh();
     }
 
     /**
@@ -134,10 +149,33 @@ class ProductController extends Controller
     }
 
     public function findBySize(SizeRequest  $request){
-         $request->validated();
+        $request->validated();
         $products = Product::where('size', $request->input('size'))->get();
         return response()->json([
             "products" => $products
+            ],200);
+    }
+
+    public function findByCategory(Category $category){
+        $products = $category->products;
+        return response()->json([
+            "products" => $products
+            ],200);
+    }
+
+    public function findByPromotion(){
+        $resultCategories = array();
+        $categories = Category::all();
+
+        foreach ($categories as $category) {
+            $promotions = $category->promotion;
+            if($promotions->count() > 0){
+                array_push($resultCategories, $category);
+            }
+        }
+
+        return response()->json([
+            "categories" => $resultCategories
             ],200);
     }
 }

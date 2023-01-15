@@ -33,6 +33,9 @@ Route::group([
         Route::get('cheapest', [App\Http\Controllers\ProductController::class, 'cheapest'])->name('products.cheapest');
         Route::get('expensive', [App\Http\Controllers\ProductController::class, 'mostExpensive'])->name('products.mostExpensive');
         Route::post('bysize', [App\Http\Controllers\ProductController::class, 'findBySize'])->name('products.findBySize');
+        Route::get('category/{category}', [App\Http\Controllers\ProductController::class, 'findByCategory'])->name('products.findByCategory');
+        Route::get('promotion', [App\Http\Controllers\ProductController::class, 'findByPromotion'])->name('products.findByPromotion');
+
 
     });
 
