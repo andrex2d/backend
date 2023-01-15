@@ -17,6 +17,8 @@ class Product extends Model
      */
     protected $table = 'product';
 
+    protected $with = ['categories'];
+
     /**
      * The attributes that are mass assignable.
      *

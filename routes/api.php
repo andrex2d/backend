@@ -26,8 +26,16 @@ Route::group([
         Route::post('me', [\App\Http\Controllers\AuthController::class, 'me'])->name('me');
     });
 
-    Route::put('products/restore/{id}', [App\Http\Controllers\ProductController::class, 'restore'])->name('products.restore');
-    Route::get('products/restoreall', [App\Http\Controllers\ProductController::class, 'restoreAll'])->name('products.restoreAll');
+
+    Route::prefix('products')->group(function () {
+        Route::put('restore/{id}', [App\Http\Controllers\ProductController::class, 'restore'])->name('products.restore');
+        Route::get('restoreall', [App\Http\Controllers\ProductController::class, 'restoreAll'])->name('products.restoreAll');
+        Route::get('cheapest', [App\Http\Controllers\ProductController::class, 'cheapest'])->name('products.cheapest');
+        Route::get('expensive', [App\Http\Controllers\ProductController::class, 'mostExpensive'])->name('products.mostExpensive');
+        Route::post('bysize', [App\Http\Controllers\ProductController::class, 'findBySize'])->name('products.findBySize');
+
+    });
+
     Route::resource('products', App\Http\Controllers\ProductController::class);
 
 });

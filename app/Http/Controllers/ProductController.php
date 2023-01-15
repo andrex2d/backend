@@ -6,8 +6,20 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ProductRequest;
+use App\Http\Requests\SizeRequest;
+
 class ProductController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -103,6 +115,29 @@ class ProductController extends Controller
 
         return response()->json([
             "message" => "Se restauro correctamente",
+            ],200);
+    }
+
+    public function cheapest(){
+        // $product = Product::orderBy("price","asc")->first()->load('categories');
+        $product = Product::orderBy("price","asc")->first();
+        return response()->json([
+            "product" => $product
+            ],200);
+    }
+
+    public function mostExpensive(){
+        $product = Product::orderBy("price","desc")->first();
+        return response()->json([
+            "product" => $product
+            ],200);
+    }
+
+    public function findBySize(SizeRequest  $request){
+         $request->validated();
+        $products = Product::where('size', $request->input('size'))->get();
+        return response()->json([
+            "products" => $products
             ],200);
     }
 }
